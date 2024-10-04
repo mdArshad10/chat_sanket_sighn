@@ -12,10 +12,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(helmet());
 app.set("view engine", "index");
-app.use("/api", express.static(join(__dirname, "..", "public")));
-app.use("/api/:chatroomId", (req, res, next) => {
-  res.status(200).render("index.ejs");
+app.use(express.static(join(__dirname, "..")));
+
+
+app.get("/api/:chatroomId", (req, res, next) => {
+  res.status(200).render("index.ejs", {
+    id: req.params.chatroomId,
+  });
 });
+app.use("/api/test", express.static(join(__dirname, "..", "public")));
 
 const server = createServer(app);
 const io = new Server(server);
@@ -25,9 +30,12 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  setInterval(() => {
-    io.emit("backend_connection", { message: "welcome back" });
-  }, 3000);
+  console.log("a user connected", socket.id);
+
+  socket.on("msg_send", (data) => {
+    console.log(data);
+    io.emit("msg_received", data);
+  });
 
   socket.on("disconnect", () => {
     console.log("user disconnected");

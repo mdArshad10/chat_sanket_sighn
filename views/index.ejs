@@ -7,5 +7,14 @@
   </head>
   <body>
     <h1>Welcome to the Chat room</h1>
+    <%= id %>
+    <input type="text" name="username" id="" placeholder="enter username" />
+    <input type="text" name="newmsg" id="newmsg" placeholder="type a message" />
+    <button type="submit">Submit</button>
+
+    <ul id="msglist"></ul>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/views/script.js"></script>
   </body>
 </html>
